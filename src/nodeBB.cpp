@@ -31,29 +31,20 @@ void NodeBB::primalHeuristic(int kpBound, int nbItems, vector<int>& weights,
   localLowerBound = 0;
   int totalWeight = 0;
 
-  auto ratios = std::vector<std::pair<int, double>>();
   for (int i = 0; i < nbItems; ++i) {
-    if (!isFixed[i] && !isRemoved[i]) {
-      ratios.push_back(i, (double)values[i] / weights[i]);
-    } else {
-      if (isFixed[i]) {
-        localLowerBound += values[i];
-        totalWeight += weights[i];
-        primalSolution[i] = true;
-      }
-    }
-  }
-  std::sort(ratios.begin(), ratios.end(),
-            [](auto& a, auto& b) { return a.second > b.second; });
-
-  for (auto item : ratios) {
-    int i = item.first;
-    if (weights[i] + totalWeight <= kpBound) {
+    if (isFixed[i]) {
+      localLowerBound += values[i];
       totalWeight += weights[i];
-      localUpperBound += values[i];
       primalSolution[i] = true;
-    } else {
-      break;
+    }
+    for (int i = 0; i < nbItems; ++i) {
+      if (!isFixed && !isRemoved[i]) {
+        if (weights[i] + totalWeight <= kpBound) {
+          totalWeight += weights[i];
+          localUpperBound += values[i];
+          primalSolution[i] = true;
+        }
+      }
     }
   }
 }
@@ -63,31 +54,25 @@ void NodeBB::solveUpperBound(int kpBound, int nbItems, vector<int>& weights,
   localUpperBound = 0;
   int totalWeight = 0;
 
-  auto ratios = std::vector<std::pair<int, double>>();
   for (int i = 0; i < nbItems; ++i) {
-    if (!isFixed[i] && !isRemoved[i]) {
-      ratios.push_back(i, (double)values[i] / weights[i]);
-    } else {
-      if (isFixed[i]) {
-        localUpperBound += values[i];
-        totalWeight += weights[i];
-      }
+    if (isFixed[i]) {
+      localLowerBound += values[i];
+      totalWeight += weights[i];
+      primalSolution[i] = true;
     }
   }
-  std::sort(ratios.begin(), ratios.end(),
-            [](auto& a, auto& b) { return a.second > b.second; });
-
-  for (auto item : ratios) {
-    int i = item.first;
-    if (weights[i] + totalWeight <= kpBound) {
-      totalWeight += weights[i];
-      localUpperBound += values[i];
-    } else {
-      overCapacitated = true;
-      criticalIndex = i;
-      fractionalVariable =
-          (double)(kpBound - totalWeight) / weights[i] * values[i];
-      break;
+  for (int i = 0; i < nbItems; ++i) {
+    if (!isFixed[i] && !isRemoved[i]) {
+      if (weights[i] + totalWeight <= kpBound) {
+        totalWeight += weights[i];
+        localUpperBound += values[i];
+      } else {
+        overCapacitated = true;
+        criticalIndex = i;
+        fractionalVariable =
+            (double)(kpBound - totalWeight) / weights[i] * values[i];
+        break;
+      }
     }
   }
 }
