@@ -26,14 +26,15 @@ void KpSolverGreedy::solveUpperBound() {
 //  heritee de la classe mere
 
 void KpSolverGreedy::solveLowerBound() {
-	solution.resize(nbItems);
-	int totalWeight = 0;
-	for (int i = 0; i < nbItems; i++) {
-		if (weights[i] + totalWeight <= knapsackBound) {
-		totalWeight += weights[i];
-		costSolution += values[i];
-		}
-	}
+  solution.resize(nbItems);
+  int totalWeight = 0;
+  for (int i = 0; i < nbItems; i++) {
+    if (weights[i] + totalWeight <= knapsackBound) {
+      totalWeight += weights[i];
+      costSolution += values[i];
+      solution[i] = true;
+    }
+  }
 }
 
 void KpSolverGreedy::solve() {
