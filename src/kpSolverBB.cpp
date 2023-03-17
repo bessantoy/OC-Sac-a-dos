@@ -106,8 +106,5 @@ void KpSolverBB::insertNodes(NodeBB* nod1, NodeBB* nod2) {
 void KpSolverBB::solve() {
   init();
 
-  while (!nodes.empty()) {        // while there are nodes to explore
-    NodeBB* node = selectNode();  // we select a node to explore
-    nbNodes++;                    // we increase the number of nodes explored
-  }
+  
 }

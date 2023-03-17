@@ -41,7 +41,6 @@ void NodeBB::primalHeuristic(int kpBound, int nbItems, vector<int>& weights,
       if (!isFixed[i] && !isRemoved[i]) {
         if (weights[i] + totalWeight <= kpBound) {
           totalWeight += weights[i];
-          localUpperBound += values[i];
           primalSolution[i] = true;
         }
       }
