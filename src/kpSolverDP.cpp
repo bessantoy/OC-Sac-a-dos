@@ -69,20 +69,7 @@ void KpSolverDP::fillFirstColumnDP() {
 }
 
 void KpSolverDP::solveIter() {
-  // 1. Initialize the first row of the matrix
-  for (int m = 0; m <= knapsackBound; m++) {
-    if (m < weights[0])
-      matrixDP[0][m] = 0;
-    else
-      matrixDP[0][m] = values[0];
-  }
-
-  // 2. Initialize the first column of the matrix
-  for (int i = 1; i < nbItems; i++) {
-    matrixDP[i][0] = 0;
-  }
-
-  // 3. Fill the matrix
+  // Fill the matrix
   for (int i = 1; i < nbItems; i++) {
     for (int m = 1; m <= knapsackBound; m++) {
       if (m < weights[i])
@@ -93,7 +80,7 @@ void KpSolverDP::solveIter() {
     }
   }
 
-  // 4. Find the cost of the solution
+  // Find the cost of the solution
   costSolution = matrixDP[nbItems - 1][knapsackBound];
 }
 
