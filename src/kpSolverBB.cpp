@@ -109,29 +109,5 @@ void KpSolverBB::solve() {
   while (!nodes.empty()) {        // while there are nodes to explore
     NodeBB* node = selectNode();  // we select a node to explore
     nbNodes++;                    // we increase the number of nodes explored
-
-    // TODO
-
-    NodeBB* nod1 = new NodeBB();
-    nod1->init(nbItems);
-    nod1->copySolution(node);
-    nod1->fixFractionalVariable(node->getFractionalVariable(), 1);
-
-    NodeBB* nod2 = new NodeBB();
-    nod2->init(nbItems);
-    nod2->copySolution(node);
-    nod2->fixFractionalVariable(node->getFractionalVariable(), 0);
-
-    nod1->solveUpperBound(knapsackBound, nbItems, weights, values);
-    nod2->solveUpperBound(knapsackBound, nbItems, weights, values);
-
-    if (withPrimalHeuristics) {
-      nod1->primalHeuristic(knapsackBound, nbItems, weights, values);
-      nod2->primalHeuristic(knapsackBound, nbItems, weights, values);
-    }
-
-    insertNodes(nod1, nod2);
-
-    delete node;
   }
 }
