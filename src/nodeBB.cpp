@@ -3,7 +3,7 @@
 #include "nodeBB.hpp"
 
 #include <algorithm>
-// #include <iostream>
+#include <iostream>
 // #include <fstream>
 
 bool NodeBB::canBeRemoved() { return overCapacitated; }
@@ -37,13 +37,11 @@ void NodeBB::primalHeuristic(int kpBound, int nbItems, vector<int>& weights,
       totalWeight += weights[i];
       primalSolution[i] = true;
     }
-    for (int i = 0; i < nbItems; ++i) {
-      if (!isFixed[i] && !isRemoved[i]) {
-        if (weights[i] + totalWeight <= kpBound) {
-          totalWeight += weights[i];
-          localUpperBound += values[i];
-          primalSolution[i] = true;
-        }
+    if (!isFixed[i] && !isRemoved[i]) {
+      if (weights[i] + totalWeight <= kpBound) {
+        totalWeight += weights[i];
+        localLowerBound += values[i];
+        primalSolution[i] = true;
       }
     }
   }
@@ -53,12 +51,17 @@ void NodeBB::solveUpperBound(int kpBound, int nbItems, vector<int>& weights,
                              vector<int>& values) {
   localUpperBound = 0;
   int totalWeight = 0;
+  fractionalVariable = 0;
+  overCapacitated = false;
 
   for (int i = 0; i < nbItems; ++i) {
     if (isFixed[i]) {
-      localLowerBound += values[i];
+      if (totalWeight + weights[i] > kpBound) {
+        overCapacitated = true;
+        break;
+      }
+      localUpperBound += values[i];
       totalWeight += weights[i];
-      primalSolution[i] = true;
     }
   }
   for (int i = 0; i < nbItems; ++i) {
@@ -67,10 +70,10 @@ void NodeBB::solveUpperBound(int kpBound, int nbItems, vector<int>& weights,
         totalWeight += weights[i];
         localUpperBound += values[i];
       } else {
-        overCapacitated = true;
         criticalIndex = i;
         fractionalVariable =
             (double)(kpBound - totalWeight) / weights[i] * values[i];
+        localUpperBound += fractionalVariable;
         break;
       }
     }
