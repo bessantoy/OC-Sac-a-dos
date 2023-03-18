@@ -104,7 +104,7 @@ void KpSolverDP::backtrack() {
       if (matrixDP[i][m] > 0) solution[i] = true;
     } else {
       if (matrixDP[i][m] != matrixDP[i - 1][m]) {
-        solution[i] = true;
+        solution[i] = true; // if 1, then item i is in the solution
         m -= weights[i];
       }
     }
