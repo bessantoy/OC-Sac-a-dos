@@ -49,8 +49,8 @@ std::cout<<"knapBound"<<knapsackBound<<std::endl;
 std::cout<<"nbItems"<<nbItems<<std::endl;
 std::cout <<"nbItemsReopt : " << nbItemsReopt << std::endl;*/
 
-  
- 
+  /*LA IL FAUT FAIRE UN SOLVE EN PROG DYNAMIQUE MAIS CA MARCHE PAS*/
+ /*
   //On initialise la matrice
   int** matrixDP = new int*[nbItemsReopt];
   for (int i = 0; i < nbItemsReopt; i++) {
@@ -115,10 +115,7 @@ std::cout << "Matrice DP: " << std::endl;
     std::cout << solutionReopt[i] << " ";
   }
 
-  // for(size_t i = 0; i< solutionReopt.size(); i++){
-  //   solution[i+lowerBoundReopt] = solutionReopt[i];
-  //   costSolution += values[i+lowerBoundReopt];
-  // }
+ */
 
   
 
