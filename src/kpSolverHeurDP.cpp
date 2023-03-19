@@ -31,26 +31,32 @@ void KpSolverHeurDP::solve() {
   int upperBoundReopt = lastIndex + nbUnselectedReopt;
   int nbItemsReopt = upperBoundReopt - lowerBoundReopt;
   int knapsackBoundReopt = knapsackBound;
+
+  //weight et value du sac à dos à reoptimiser
+  int* weightsReopt = new int[nbItemsReopt];
+  int* valuesReopt = new int[nbItemsReopt];
+
+  //On remplit les tableaux de poids et de valeurs du sac à dos à reoptimiser
+  for(int i = 0; i < nbItemsReopt; i++){
+    weightsReopt[i] = weights[i + lowerBoundReopt];
+    valuesReopt[i] = values[i + lowerBoundReopt];
+  }
   
   //On selectionne dans la solution finale les objets inferieurs à lowerboundReopt 
-
   solution.resize(nbItems);
-
-
   for(int i = 0; i < lowerBoundReopt; i++){
     knapsackBoundReopt -= weights[i];
     solution[i] = true;
     costSolution += values[i];
   }
 
-
 /*std::cout<<"knapBoundReopt"<<knapsackBoundReopt<<std::endl;
 std::cout<<"knapBound"<<knapsackBound<<std::endl;
 std::cout<<"nbItems"<<nbItems<<std::endl;
 std::cout <<"nbItemsReopt : " << nbItemsReopt << std::endl;*/
 
-  /*LA IL FAUT FAIRE UN SOLVE EN PROG DYNAMIQUE MAIS CA MARCHE PAS*/
- /*
+  
+ 
   //On initialise la matrice
   int** matrixDP = new int*[nbItemsReopt];
   for (int i = 0; i < nbItemsReopt; i++) {
@@ -62,35 +68,23 @@ std::cout <<"nbItemsReopt : " << nbItemsReopt << std::endl;*/
   }
   //on remplit la premiere colonne de la matrice
   for (int m = 0; m <= knapsackBoundReopt; m++)
-    if (m < weights[0])
+    if (m < weightsReopt[0])
       matrixDP[0][m] = 0;
     else
-      matrixDP[0][m] = values[0];
+      matrixDP[0][m] = valuesReopt[0];
 
   
   
   // solve_iter
-  
   for (int i = 1; i < nbItemsReopt; i++) {
     for (int m = 0; m <= knapsackBoundReopt; m++) {
-      if (m < weights[i])
+      if (m < weightsReopt[i])
         matrixDP[i][m] = matrixDP[i - 1][m];
       else
-        matrixDP[i][m] = std::max(matrixDP[i - 1][m],
-                                  matrixDP[i - 1][m - weights[i]] + values[i]);
+        matrixDP[i][m] = std::max(matrixDP[i - 1][m],matrixDP[i - 1][m - weightsReopt[i]] + valuesReopt[i]);
     }
   }
 
-std::cout << "Matrice DP: " << std::endl;
-  for (int i = 0; i < nbItemsReopt; i++) {
-    for (int j = 0; j <= knapsackBoundReopt; j++) {
-      std::cout << matrixDP[i][j] << " ";
-    }
-    std::cout << std::endl;
-  }
-  
-
-  // Find the cost of the sub_solution
   costSolution += matrixDP[nbItemsReopt - 1][knapsackBoundReopt];
   //std::cout << "Cost of the sub_solution: " << costSolution << std::endl;
 
@@ -110,12 +104,21 @@ std::cout << "Matrice DP: " << std::endl;
       }
     }
   }
-  std::cout << "Solution reoptimisee: " <<  std::endl;
+ /*std::cout << "Solution reoptimisee: " <<  std::endl;
   for (int i = 0; i < nbItemsReopt; i++) {
     std::cout << solutionReopt[i] << " ";
-  }
+  }*/
 
- */
+  for (int i = 0; i < nbItemsReopt; i++) {
+    delete[] matrixDP[i];
+}
+delete[] matrixDP;
+
+
+  // for(size_t i = 0; i< solutionReopt.size(); i++){
+  //   solution[i+lowerBoundReopt] = solutionReopt[i];
+  //   costSolution += values[i+lowerBoundReopt];
+  // }
 
   
 
